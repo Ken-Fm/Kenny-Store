@@ -1,0 +1,991 @@
+<!DOCTYPE html><html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEN STORE — Game Services</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --red:#8e1018;
+  --red2:#c52b36;
+  --dark:#09090b;
+  --panel:#111114;
+  --line:rgba(255,255,255,.12);
+  --text:#f4f1ef;
+  --muted:#989398;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--dark);
+  color:var(--text);
+  font-family:'Barlow Condensed',sans-serif;
+  overflow-x:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.035;
+  z-index:100;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
+
+/* INTRO */
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:999;
+  background:#050506;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  animation:introOut 1s ease 4.8s forwards;
+}
+
+.intro-grid{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:50px 50px;
+  transform:perspective(500px) rotateX(55deg) scale(2);
+  transform-origin:center bottom;
+  opacity:.35;
+}
+
+.intro-line{
+  position:absolute;
+  width:100%;
+  height:1px;
+  background:var(--red2);
+  box-shadow:0 0 25px var(--red2);
+  top:50%;
+  animation:scan 2s ease-in-out infinite;
+}
+
+.intro-content{
+  position:relative;
+  text-align:center;
+  z-index:2;
+}
+
+.intro-small{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:5px;
+  color:#aaa;
+  margin-bottom:18px;
+  opacity:0;
+  animation:fadeUp .8s ease .5s forwards;
+}
+
+.intro-title{
+  font-size:clamp(60px,16vw,180px);
+  font-weight:800;
+  letter-spacing:-5px;
+  line-height:.8;
+  color:white;
+  text-shadow:
+    5px 0 var(--red),
+    0 0 45px rgba(197,43,54,.55);
+  opacity:0;
+  animation:titleIn 1.2s cubic-bezier(.2,.8,.2,1) .8s forwards;
+}
+
+.intro-sub{
+  margin-top:28px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:3px;
+  color:#777;
+  opacity:0;
+  animation:fadeUp .8s ease 2s forwards;
+}
+
+.loader{
+  width:180px;
+  height:2px;
+  background:#222;
+  margin:25px auto 0;
+  overflow:hidden;
+  opacity:0;
+  animation:fadeUp .5s ease 2.4s forwards;
+}
+
+.loader span{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--red2);
+  box-shadow:0 0 15px var(--red2);
+  animation:load 2s ease 2.5s forwards;
+}
+
+@keyframes introOut{
+  to{opacity:0;visibility:hidden;pointer-events:none}
+}
+@keyframes titleIn{
+  from{opacity:0;transform:scale(1.5);filter:blur(18px)}
+  to{opacity:1;transform:scale(1);filter:blur(0)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(15px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes load{to{width:100%}}
+@keyframes scan{
+  0%,100%{transform:translateY(-160px);opacity:0}
+  50%{transform:translateY(160px);opacity:1}
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:50;
+  padding:22px 5vw;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  mix-blend-mode:normal;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.logo span{
+  color:var(--red2);
+}
+
+.nav-links{
+  display:flex;
+  gap:25px;
+  align-items:center;
+}
+
+.nav-links a{
+  color:#aaa;
+  text-decoration:none;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  transition:.3s;
+}
+
+.nav-links a:hover{
+  color:white;
+}
+
+.nav-btn{
+  border:1px solid var(--line);
+  padding:10px 16px;
+  color:white!important;
+}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  padding:130px 8vw 80px;
+  background:
+    radial-gradient(circle at 80% 50%,rgba(142,16,24,.35),transparent 35%),
+    linear-gradient(110deg,#080809 0%,#13090b 55%,#250b0e 100%);
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,#09090b 0%,transparent 60%);
+  pointer-events:none;
+}
+
+.hero-img{
+  position:absolute;
+  right:2%;
+  bottom:-5%;
+  height:95%;
+  max-width:70%;
+  object-fit:contain;
+  object-position:bottom right;
+  filter:
+    drop-shadow(-25px 0 45px rgba(197,43,54,.25))
+    saturate(1.1);
+  opacity:.9;
+  animation:characterIn 1.5s ease 5s both;
+  z-index:1;
+}
+
+@keyframes characterIn{
+  from{transform:translateX(100px);opacity:0}
+  to{transform:translateX(0);opacity:.9}
+}
+
+.hero-content{
+  position:relative;
+  z-index:3;
+  max-width:650px;
+  animation:fadeUp 1s ease 5.2s both;
+}
+
+.kicker{
+  font-family:'Space Mono',monospace;
+  color:#b7b1b1;
+  font-size:11px;
+  letter-spacing:4px;
+  margin-bottom:22px;
+}
+
+.hero h1{
+  font-size:clamp(65px,11vw,145px);
+  line-height:.8;
+  letter-spacing:-4px;
+  font-weight:800;
+}
+
+.hero h1 span{
+  color:var(--red2);
+}
+
+.hero-desc{
+  margin-top:30px;
+  color:#aaa;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  line-height:1.8;
+  max-width:390px;
+}
+
+.hero-actions{
+  display:flex;
+  gap:12px;
+  margin-top:32px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.04);
+  color:white;
+  padding:15px 22px;
+  text-decoration:none;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  transition:.3s;
+}
+
+.btn.primary{
+  background:var(--red);
+  border-color:var(--red2);
+}
+
+.btn:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 30px rgba(197,43,54,.25);
+}
+
+.scroll-indicator{
+  position:absolute;
+  bottom:35px;
+  left:8vw;
+  color:#777;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:3px;
+  z-index:3;
+}
+
+/* SECTION */
+.section{
+  padding:120px 8vw;
+  position:relative;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:55px;
+  gap:20px;
+}
+
+.section-label{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--red2);
+  letter-spacing:3px;
+  margin-bottom:12px;
+}
+
+.section-title{
+  font-size:clamp(42px,7vw,85px);
+  line-height:.85;
+}
+
+.section-note{
+  max-width:280px;
+  color:#777;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  line-height:1.7;
+}
+
+/* GAME SELECTOR */
+.game-selector{
+  border-top:1px solid var(--line);
+}
+
+.game-row{
+  min-height:115px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:25px;
+  padding:20px 0;
+  cursor:pointer;
+  position:relative;
+  transition:.4s;
+  overflow:hidden;
+}
+
+.game-row:before{
+  content:"";
+  position:absolute;
+  left:-100%;
+  top:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(90deg,rgba(142,16,24,.35),transparent);
+  transition:.5s;
+}
+
+.game-row:hover:before{
+  left:0;
+}
+
+.game-row:hover{
+  padding-left:25px;
+}
+
+.game-number{
+  font-family:'Space Mono',monospace;
+  color:#555;
+  font-size:11px;
+  width:35px;
+}
+
+.game-name{
+  font-size:clamp(30px,5vw,65px);
+  font-weight:700;
+  letter-spacing:-1px;
+  position:relative;
+}
+
+.game-type{
+  color:#777;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  margin-left:auto;
+  position:relative;
+}
+
+.game-arrow{
+  font-size:25px;
+  color:var(--red2);
+  position:relative;
+}
+
+/* GAME PAGE */
+.game-page{
+  display:none;
+  min-height:100vh;
+  padding:120px 8vw;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(142,16,24,.2),transparent 30%),
+    #0b0b0d;
+}
+
+.game-page.active{
+  display:block;
+  animation:pageIn .6s ease both;
+}
+
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.back{
+  display:inline-block;
+  color:#777;
+  text-decoration:none;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  margin-bottom:40px;
+}
+
+.game-page h2{
+  font-size:clamp(60px,10vw,130px);
+  line-height:.8;
+  margin-bottom:15px;
+}
+
+.game-page .subtitle{
+  color:var(--red2);
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:3px;
+  margin-bottom:55px;
+}
+
+.category{
+  margin-top:55px;
+}
+
+.category h3{
+  font-family:'Space Mono',monospace;
+  font-size:13px;
+  color:#aaa;
+  border-left:3px solid var(--red2);
+  padding-left:12px;
+  margin-bottom:20px;
+  letter-spacing:2px;
+}
+
+.price-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:10px;
+}
+
+.price-item{
+  background:#111114;
+  border:1px solid var(--line);
+  padding:22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+  transition:.3s;
+  position:relative;
+}
+
+.price-item:hover{
+  background:#1b0d0f;
+  border-color:var(--red2);
+  transform:translateY(-3px);
+}
+
+.price-name{
+  font-size:20px;
+}
+
+.price{
+  font-family:'Space Mono',monospace;
+  color:#e36a72;
+  font-size:11px;
+  text-align:right;
+}
+
+/* WARNING */
+.warning{
+  margin-top:70px;
+  padding:25px;
+  border:1px solid rgba(197,43,54,.4);
+  background:rgba(142,16,24,.08);
+}
+
+.warning strong{
+  color:#e36a72;
+  display:block;
+  margin-bottom:12px;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+}
+
+.warning p{
+  color:#aaa;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  line-height:1.8;
+}
+
+/* FOOTER */
+footer{
+  padding:70px 8vw;
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:30px;
+  flex-wrap:wrap;
+}
+
+footer h2{
+  font-size:45px;
+}
+
+footer p{
+  color:#777;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  line-height:1.8;
+}
+
+.wa-float{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:90;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#21c063;
+  color:white;
+  text-decoration:none;
+  font-size:22px;
+  box-shadow:0 0 25px rgba(33,192,99,.35);
+  transition:.3s;
+}
+
+.wa-float:hover{
+  transform:scale(1.1);
+}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+
+  .nav{
+    padding:18px 5vw;
+  }
+
+  .nav-links a:not(.nav-btn){
+    display:none;
+  }
+
+  .hero{
+    min-height:100vh;
+    padding:130px 7vw 90px;
+    align-items:flex-start;
+  }
+
+  .hero-img{
+    right:-25%;
+    bottom:0;
+    height:70%;
+    max-width:100%;
+    opacity:.45;
+  }
+
+  .hero:after{
+    background:linear-gradient(90deg,#09090b 0%,rgba(9,9,11,.65) 100%);
+  }
+
+  .hero-content{
+    margin-top:50px;
+  }
+
+  .hero h1{
+    font-size:75px;
+  }
+
+  .section{
+    padding:85px 7vw;
+  }
+
+  .section-head{
+    display:block;
+  }
+
+  .section-note{
+    margin-top:20px;
+  }
+
+  .game-row{
+    min-height:90px;
+    gap:12px;
+  }
+
+  .game-number{
+    width:20px;
+  }
+
+  .game-name{
+    font-size:34px;
+  }
+
+  .game-type{
+    display:none;
+  }
+
+  .game-page{
+    padding:110px 7vw 80px;
+  }
+
+  .game-page h2{
+    font-size:68px;
+  }
+
+  .price-list{
+    grid-template-columns:1fr;
+  }
+}
+</style></head><body><!-- INTRO --><div id="intro">
+  <div class="intro-grid"></div>
+  <div class="intro-line"></div>  <div class="intro-content">
+    <div class="intro-small">EST. 2026 / DIGITAL GAME SERVICE</div>
+    <div class="intro-title">KEN<br>STORE</div>
+    <div class="intro-sub">JOKI • TOP UP • GAME SERVICE</div>
+    <div class="loader"><span></span></div>
+  </div>
+</div><!-- NAV --><nav class="nav">
+  <div class="logo">KEN<span>.</span>STORE</div>  <div class="nav-links">
+    <a href="#games">SERVICES</a>
+    <a href="https://whatsapp.com/channel/0029VbCT9FN42DcWminIwH3Uc" target="_blank">TESTIMONI</a>
+    <a class="nav-btn" href="https://wa.me/628989092132" target="_blank">CONTACT</a>
+  </div>
+</nav><!-- HOME --><main id="home"><section class="hero">
+  <img src="arlechinno.png" class="hero-img" alt="Arlecchino">  <div class="hero-content">
+    <div class="kicker">KEN STORE / DIGITAL SERVICE</div><h1>PLAY.<br><span>WE HANDLE</span><br>THE REST.</h1>
+
+<p class="hero-desc">
+  Premium game services for players who want their account progress handled properly, safely, and efficiently.
+</p>
+
+<div class="hero-actions">
+  <a href="#games" class="btn primary">BROWSE SERVICES →</a>
+  <a href="https://whatsapp.com/channel/0029VbCT9FN42DcWminIwH3Uc" target="_blank" class="btn">VIEW TESTIMONI</a>
+</div>
+
+  </div>  <div class="scroll-indicator">SCROLL TO EXPLORE ↓</div>
+</section><section class="section" id="games">
+  <div class="section-head">
+    <div>
+      <div class="section-label">01 / SELECT SERVICE</div>
+      <h2 class="section-title">CHOOSE<br>YOUR GAME.</h2>
+    </div><div class="section-note">
+  Select a game to open its own service menu. Every available option can be sent directly to WhatsApp.
+</div>
+
+  </div>  <div class="game-selector"><div class="game-row" onclick="openGame('genshin')">
+  <div class="game-number">01</div>
+  <div class="game-name">GENSHIN IMPACT</div>
+  <div class="game-type">JOKI / TOP UP</div>
+  <div class="game-arrow">↗</div>
+</div>
+
+<div class="game-row" onclick="openGame('wuwa')">
+  <div class="game-number">02</div>
+  <div class="game-name">WUTHERING WAVES</div>
+  <div class="game-type">TOP UP</div>
+  <div class="game-arrow">↗</div>
+</div>
+
+<div class="game-row" onclick="openGame('hsr')">
+  <div class="game-number">03</div>
+  <div class="game-name">HONKAI: STAR RAIL</div>
+  <div class="game-type">TOP UP</div>
+  <div class="game-arrow">↗</div>
+</div>
+
+<div class="game-row" onclick="openGame('ml')">
+  <div class="game-number">04</div>
+  <div class="game-name">MOBILE LEGENDS</div>
+  <div class="game-type">TOP UP / MEMBERSHIP</div>
+  <div class="game-arrow">↗</div>
+</div>
+
+<div class="game-row" onclick="openGame('ff')">
+  <div class="game-number">05</div>
+  <div class="game-name">FREE FIRE</div>
+  <div class="game-type">TOP UP / MEMBERSHIP</div>
+  <div class="game-arrow">↗</div>
+</div>
+
+<div class="game-row" onclick="openGame('bloodstrike')">
+  <div class="game-number">06</div>
+  <div class="game-name">BLOODSTRIKE</div>
+  <div class="game-type">TOP UP</div>
+  <div class="game-arrow">↗</div>
+</div>
+
+  </div>
+</section></main><!-- GENSHIN --><section class="game-page" id="genshin">
+<a href="#games" class="back" onclick="closeGames()">← BACK TO SERVICES</a><h2>GENSHIN<br>IMPACT</h2>
+<div class="subtitle">JOKI SERVICE / TOP UP</div><div class="category">
+<h3>QUEST</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('AQ — Archon Quest')"><span class="price-name">AQ</span><span class="price">IDR 15.000 / BAG</span></div>
+  <div class="price-item" onclick="order('DQ — Daily Quest')"><span class="price-name">DQ</span><span class="price">IDR 2.000</span></div>
+  <div class="price-item" onclick="order('WQ — World Quest')"><span class="price-name">WQ</span><span class="price">IDR 10.000 / BAG</span></div>
+  <div class="price-item" onclick="order('EQ — Event Quest')"><span class="price-name">EQ</span><span class="price">IDR 10.000 / FINALE</span></div>
+  <div class="price-item" onclick="order('SQ — Story Quest')"><span class="price-name">SQ</span><span class="price">IDR 10.000 / FINALE</span></div>
+</div>
+</div><div class="category">
+<h3>DAILY</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Weekly')"><span class="price-name">WEEKLY</span><span class="price">IDR 10.000</span></div>
+  <div class="price-item" onclick="order('Weekly + Resin Used Costume')"><span class="price-name">WEEKLY + RESIN</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Monthly')"><span class="price-name">MONTHLY</span><span class="price">IDR 25.000</span></div>
+  <div class="price-item" onclick="order('Monthly + Resin Used Costume')"><span class="price-name">MONTHLY + RESIN</span><span class="price">IDR 35.000</span></div>
+</div>
+</div><div class="category">
+<h3>EXPLORE / LOCATION ONLY</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('1 Location — Mondstadt, Liyue, Fontaine, Natlan, Nod Krai')"><span class="price-name">1 LOC — STANDARD</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('1 Location — Sumeru / Inazuma')"><span class="price-name">1 LOC — PREMIUM</span><span class="price">IDR 25.000</span></div>
+  <div class="price-item" onclick="order('Another World + Quest')"><span class="price-name">ANOTHER WORLD + QUEST</span><span class="price">IDR 25.000</span></div>
+</div>
+</div><div class="category">
+<h3>CULUS</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Culus — Mondstadt')"><span class="price-name">MONDSTADT</span><span class="price">IDR 10.000</span></div>
+  <div class="price-item" onclick="order('Culus — Liyue')"><span class="price-name">LIYUE</span><span class="price">IDR 10.000</span></div>
+  <div class="price-item" onclick="order('Culus — Inazuma')"><span class="price-name">INAZUMA</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Culus — Sumeru')"><span class="price-name">SUMERU</span><span class="price">IDR 25.000</span></div>
+  <div class="price-item" onclick="order('Culus — Fontaine')"><span class="price-name">FONTAINE</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Culus — Natlan')"><span class="price-name">NATLAN</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Culus — Nod Krai')"><span class="price-name">NOD KRAI</span><span class="price">IDR 15.000</span></div>
+</div>
+</div><div class="category">
+<h3>WEAPON / ASCENSION</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Weapon B4 0-90')"><span class="price-name">B4 0–90</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Weapon B5 0-90')"><span class="price-name">B5 0–90</span><span class="price">IDR 25.000</span></div>
+  <div class="price-item" onclick="order('Weapon Refine B4')"><span class="price-name">REFINE B4</span><span class="price">IDR 30.000–50.000</span></div>
+  <div class="price-item" onclick="order('Weapon Material 0-50')"><span class="price-name">MATERIAL 0–50</span><span class="price">IDR 5.000</span></div>
+</div>
+</div><div class="category">
+<h3>CHARACTER / TALENT</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Character B4')"><span class="price-name">B4</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Character B5 Standard')"><span class="price-name">B5 STANDARD</span><span class="price">IDR 20.000</span></div>
+  <div class="price-item" onclick="order('Character B5 Limited')"><span class="price-name">B5 LIMITED</span><span class="price">IDR 30.000</span></div>
+  <div class="price-item" onclick="order('Normal Attack 1-5')"><span class="price-name">NORMAL ATTACK 1–5</span><span class="price">IDR 15.000</span></div>
+  <div class="price-item" onclick="order('Elemental Skill 1-5')"><span class="price-name">ELEMENTAL SKILL 1–5</span><span class="price">IDR 25.000</span></div>
+  <div class="price-item" onclick="order('Elemental Burst 1-5')"><span class="price-name">ELEMENTAL BURST 1–5</span><span class="price">IDR 25.000</span></div>
+</div>
+</div><div class="category">
+<h3>SPIRAL ABYSS</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Spiral Abyss')"><span class="price-name">SPIRAL ABYSS</span><span class="price">IDR 25.000</span></div>
+</div>
+</div><div class="category">
+<h3>TOP UP / GENESIS CRYSTALS</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Genshin 60 Genesis')"><span class="price-name">60</span><span class="price">IDR 16.000</span></div>
+  <div class="price-item" onclick="order('Genshin 330 Genesis')"><span class="price-name">330</span><span class="price">IDR 75.000</span></div>
+  <div class="price-item" onclick="order('Genshin 1090 Genesis')"><span class="price-name">1090</span><span class="price">IDR 231.000</span></div>
+  <div class="price-item" onclick="order('Genshin 2240 Genesis')"><span class="price-name">2240</span><span class="price">IDR 445.000</span></div>
+  <div class="price-item" onclick="order('Genshin 3880 Genesis')"><span class="price-name">3880</span><span class="price">IDR 738.000</span></div>
+  <div class="price-item" onclick="order('Genshin 8080 Genesis')"><span class="price-name">8080</span><span class="price">IDR 1.475.000</span></div>
+  <div class="price-item" onclick="order('Genshin Welkin')"><span class="price-name">WELKIN</span><span class="price">IDR 75.000</span></div>
+</div>
+</div><div class="category">
+<h3>MAFIA AREA / REGION</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Mondstadt Mafia Area')"><span class="price-name">MONDSTADT</span><span class="price">IDR 120.000</span></div>
+  <div class="price-item" onclick="order('Liyue Mafia Area')"><span class="price-name">LIYUE</span><span class="price">IDR 180.000</span></div>
+  <div class="price-item" onclick="order('Inazuma Mafia Area')"><span class="price-name">INAZUMA</span><span class="price">IDR 210.000</span></div>
+  <div class="price-item" onclick="order('Sumeru Mafia Area')"><span class="price-name">SUMERU</span><span class="price">IDR 340.000</span></div>
+  <div class="price-item" onclick="order('Fontaine Mafia Area')"><span class="price-name">FONTAINE</span><span class="price">IDR 300.000</span></div>
+  <div class="price-item" onclick="order('Natlan Mafia Area')"><span class="price-name">NATLAN</span><span class="price">IDR 280.000</span></div>
+  <div class="price-item" onclick="order('Nod Krai Mafia Area')"><span class="price-name">NOD KRAI</span><span class="price">IDR 380.000</span></div>
+</div>
+</div><div class="warning">
+<strong>IMPORTANT / SERVICE POLICY</strong>
+<p>
+Culus yang didapat melalui quest tidak akan kami ambil.
+Refine = no gacha.
+Untuk joki, pastikan akun sudah menggunakan login second.
+Kami hanya menerima login melalui HoYoverse.
+Selama proses pengerjaan, worker tidak boleh ditabrak.
+Saat pekerjaan selesai, worker akan melakukan record logout.
+Estimasi proses: 1 minggu / 24 jam sesuai jenis layanan.
+</p>
+</div>
+</section><!-- WUWA --><section class="game-page" id="wuwa">
+<a href="#games" class="back" onclick="closeGames()">← BACK TO SERVICES</a>
+<h2>WUTHERING<br>WAVES</h2>
+<div class="subtitle">TOP UP / LUNITE</div><div class="category">
+<h3>LUNITE</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('Wuthering Waves 60 Lunite')"><span class="price-name">60 LUNITE</span><span class="price">IDR 16.000</span></div>
+  <div class="price-item" onclick="order('Wuthering Waves 330 Lunite')"><span class="price-name">330 LUNITE</span><span class="price">IDR 71.000</span></div>
+  <div class="price-item" onclick="order('Wuthering Waves 1010 Lunite')"><span class="price-name">1010 LUNITE</span><span class="price">IDR 255.000</span></div>
+  <div class="price-item" onclick="order('Wuthering Waves 2000 Lunite')"><span class="price-name">2000 LUNITE</span><span class="price">IDR 482.000</span></div>
+  <div class="price-item" onclick="order('Lunite Subscription')"><span class="price-name">LUNITE S</span><span class="price">IDR 82.000</span></div>
+</div>
+</div>
+</section><!-- HSR --><section class="game-page" id="hsr">
+<a href="#games" class="back" onclick="closeGames()">← BACK TO SERVICES</a>
+<h2>HONKAI<br>STAR RAIL</h2>
+<div class="subtitle">TOP UP / ONEIRIC SHARD</div><div class="category">
+<h3>ONEIRIC SHARD</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('HSR 60 Oneiric Shard')"><span class="price-name">60</span><span class="price">IDR 16.000</span></div>
+  <div class="price-item" onclick="order('HSR 330 Oneiric Shard')"><span class="price-name">330</span><span class="price">IDR 75.000</span></div>
+  <div class="price-item" onclick="order('HSR 1090 Oneiric Shard')"><span class="price-name">1090</span><span class="price">IDR 230.000</span></div>
+  <div class="price-item" onclick="order('HSR 2240 Oneiric Shard')"><span class="price-name">2240</span><span class="price">IDR 440.000</span></div>
+  <div class="price-item" onclick="order('HSR 3880 Oneiric Shard')"><span class="price-name">3880</span><span class="price">IDR 725.000</span></div>
+  <div class="price-item" onclick="order('HSR 8080 Oneiric Shard')"><span class="price-name">8080</span><span class="price">IDR 1.450.000</span></div>
+  <div class="price-item" onclick="order('Express Supply Pass')"><span class="price-name">EXPRESS SUPPLY PASS</span><span class="price">IDR 75.000</span></div>
+</div>
+</div>
+</section><!-- ML --><section class="game-page" id="ml">
+<a href="#games" class="back" onclick="closeGames()">← BACK TO SERVICES</a>
+<h2>MOBILE<br>LEGENDS</h2>
+<div class="subtitle">DIAMONDS / MEMBERSHIP</div><div class="category">
+<h3>DIAMONDS</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('ML 19 Diamond')"><span class="price-name">19 DIAMOND</span><span class="price">IDR 6.000</span></div>
+  <div class="price-item" onclick="order('ML 44 Diamond')"><span class="price-name">44 DIAMOND</span><span class="price">IDR 12.000</span></div>
+  <div class="price-item" onclick="order('ML 50+9 Diamond')"><span class="price-name">50 + 9 DIAMOND</span><span class="price">IDR 16.000</span></div>
+  <div class="price-item" onclick="order('ML 100 Diamond')"><span class="price-name">100 DIAMOND</span><span class="price">IDR 26.000</span></div>
+  <div class="price-item" onclick="order('ML 170 Diamond')"><span class="price-name">170 DIAMOND</span><span class="price">IDR 46.000</span></div>
+  <div class="price-item" onclick="order('ML 200 Diamond')"><span class="price-name">200 DIAMOND</span><span class="price">IDR 56.000</span></div>
+  <div class="price-item" onclick="order('ML 278 Diamond')"><span class="price-name">278 DIAMOND</span><span class="price">IDR 74.000</span></div>
+  <div class="price-item" onclick="order('ML 355 Diamond')"><span class="price-name">355 DIAMOND</span><span class="price">IDR 93.000</span></div>
+  <div class="price-item" onclick="order('ML 518 Diamond')"><span class="price-name">518 DIAMOND</span><span class="price">IDR 140.000</span></div>
+</div>
+</div><div class="category">
+<h3>MEMBERSHIP / WDP</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('ML 1x WDP 220')"><span class="price-name">1× WDP 220</span><span class="price">IDR 29.000</span></div>
+  <div class="price-item" onclick="order('ML 2x WDP 440')"><span class="price-name">2× WDP 440</span><span class="price">IDR 57.000</span></div>
+  <div class="price-item" onclick="order('ML Starlight Membership')"><span class="price-name">STARLIGHT</span><span class="price">IDR 80.000</span></div>
+  <div class="price-item" onclick="order('ML 4x WDP 880')"><span class="price-name">4× WDP 880</span><span class="price">IDR 115.000</span></div>
+  <div class="price-item" onclick="order('ML Twilight Pass')"><span class="price-name">TWILIGHT PASS</span><span class="price">IDR 146.000</span></div>
+  <div class="price-item" onclick="order('ML Starlight Member Plus')"><span class="price-name">STARLIGHT PLUS</span><span class="price">IDR 195.000</span></div>
+</div>
+</div>
+</section><!-- FREE FIRE --><section class="game-page" id="ff">
+<a href="#games" class="back" onclick="closeGames()">← BACK TO SERVICES</a>
+<h2>FREE<br>FIRE</h2>
+<div class="subtitle">DIAMONDS / MEMBERSHIP</div><div class="category">
+<h3>DIAMONDS</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('FF 5 Diamond')"><span class="price-name">5 DIAMOND</span><span class="price">IDR 1.500</span></div>
+  <div class="price-item" onclick="order('FF 10 Diamond')"><span class="price-name">10 DIAMOND</span><span class="price">IDR 3.000</span></div>
+  <div class="price-item" onclick="order('FF 30 Diamond')"><span class="price-name">30 DIAMOND</span><span class="price">IDR 5.000</span></div>
+  <div class="price-item" onclick="order('FF 80 Diamond')"><span class="price-name">80 DIAMOND</span><span class="price">IDR 10.500</span></div>
+  <div class="price-item" onclick="order('FF 100 Diamond')"><span class="price-name">100 DIAMOND</span><span class="price">IDR 13.500</span></div>
+  <div class="price-item" onclick="order('FF 120 Diamond')"><span class="price-name">120 DIAMOND</span><span class="price">IDR 16.500</span></div>
+  <div class="price-item" onclick="order('FF 150 Diamond')"><span class="price-name">150 DIAMOND</span><span class="price">IDR 20.000</span></div>
+  <div class="price-item" onclick="order('FF 200 Diamond')"><span class="price-name">200 DIAMOND</span><span class="price">IDR 25.000</span></div>
+  <div class="price-item" onclick="order('FF 250 Diamond')"><span class="price-name">250 DIAMOND</span><span class="price">IDR 33.000</span></div>
+  <div class="price-item" onclick="order('FF 300 Diamond')"><span class="price-name">300 DIAMOND</span><span class="price">IDR 39.000</span></div>
+</div>
+</div><div class="category">
+<h3>MAFIA AREA</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('FF 1000 Diamond Mafia Area')"><span class="price-name">1000 DIAMOND</span><span class="price">IDR 122.000</span></div>
+  <div class="price-item" onclick="order('FF 1080 Diamond Mafia Area')"><span class="price-name">1080 DIAMOND</span><span class="price">IDR 140.000</span></div>
+  <div class="price-item" onclick="order('FF 2000 Diamond Mafia Area')"><span class="price-name">2000 DIAMOND</span><span class="price">IDR 250.000</span></div>
+</div>
+</div><div class="category">
+<h3>MEMBERSHIP</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('FF Booyah Pass')"><span class="price-name">BOOYAH PASS</span><span class="price">IDR 45.000</span></div>
+  <div class="price-item" onclick="order('FF Monthly Membership')"><span class="price-name">MONTHLY 50D</span><span class="price">IDR 28.000</span></div>
+  <div class="price-item" onclick="order('FF Level Up Pass')"><span class="price-name">LEVEL UP PASS 30</span><span class="price">IDR 15.000</span></div>
+</div>
+</div>
+</section><!-- BLOODSTRIKE --><section class="game-page" id="bloodstrike">
+<a href="#games" class="back" onclick="closeGames()">← BACK TO SERVICES</a>
+<h2>BLOOD<br>STRIKE</h2>
+<div class="subtitle">TOP UP / GOLD</div><div class="category">
+<h3>GOLD</h3>
+<div class="price-list">
+  <div class="price-item" onclick="order('BloodStrike 100 Gold')"><span class="price-name">100 GOLD</span><span class="price">IDR 14.500</span></div>
+  <div class="price-item" onclick="order('BloodStrike 300 Gold')"><span class="price-name">300 GOLD</span><span class="price">IDR 40.000</span></div>
+  <div class="price-item" onclick="order('BloodStrike 500 Gold')"><span class="price-name">500 GOLD</span><span class="price">IDR 61.000</span></div>
+  <div class="price-item" onclick="order('BloodStrike 1000 Gold')"><span class="price-name">1000 GOLD</span><span class="price">IDR 135.000</span></div>
+  <div class="price-item" onclick="order('BloodStrike 2000 Gold')"><span class="price-name">2000 GOLD</span><span class="price">IDR 265.000</span></div>
+  <div class="price-item" onclick="order('BloodStrike 5000 Gold')"><span class="price-name">5000 GOLD</span><span class="price">IDR 655.000</span></div>
+</div>
+</div>
+</section><footer>
+  <div>
+    <h2>KEN<span style="color:#c52b36">.</span>STORE</h2>
+    <p>GAME SERVICE / TOP UP / JOKI</p>
+  </div>  <div>
+    <p>ORDER VIA WHATSAPP</p>
+    <p>08989092132</p>
+    <br>
+    <a class="btn primary" href="https://whatsapp.com/channel/0029VbCT9FN42DcWminIwH3Uc" target="_blank">
+      TESTIMONI CHANNEL →
+    </a>
+  </div>
+</footer><a class="wa-float" href="https://wa.me/628989092132" target="_blank">◉</a>
+
+<script>
+
+const waNumber = "628989092132";
+
+function order(item){
+  const message =
+`Hallo min, saya mau order:
+
+${item}
+
+Dari Ken Store.`;
+
+  window.open(
+    `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+}
+
+function openGame(id){
+
+  document.getElementById("home").style.display = "none";
+
+  document.querySelectorAll(".game-page").forEach(page=>{
+    page.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function closeGames(){
+
+  setTimeout(()=>{
+    document.querySelectorAll(".game-page").forEach(page=>{
+      page.classList.remove("active");
+    });
+
+    document.getElementById("home").style.display = "block";
+  },100);
+}
+
+</script></body>
+</html>
